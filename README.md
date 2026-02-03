@@ -62,7 +62,7 @@ ad_ctr_analysis/
     *   Impression -> Click: ~2.4%
     *   Click -> Registration: ~30%
     *   Registration -> Conversion: ~24%
-*   **洞察**：註冊到購買的流失率較低，顯示註冊使用者具備高購物意圖。
+*   **洞見**：註冊到購買的流失率較低，顯示註冊使用者具備高購物意圖。
 
 ---
 
@@ -70,6 +70,8 @@ ad_ctr_analysis/
 為了讓非技術團隊也能探索資料，我們製作了互動式 Dashboard：
 *   **Streamlit Web App**：使用 Python 撰寫的即時互動分析工具。
 *   此儀表板串接了 SQLite 資料庫，提供即時的篩選與下鑽分析 (Drill-down)。
+<img width="1864" height="1025" alt="image" src="https://github.com/user-attachments/assets/9b244736-2d70-4fad-8c92-fc8ac0b21241" />
+[streamlit-dashboard-2026-02-04-02-30-34.webm](https://github.com/user-attachments/assets/2709d4b1-f629-46f0-8bd4-baf91507fc48)
 
 ---
 
