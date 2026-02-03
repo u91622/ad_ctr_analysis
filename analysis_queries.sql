@@ -1,8 +1,8 @@
--- Ad CTR and Conversion Analysis SQL Queries
--- Designed for SQLite (Compatible with PostgreSQL/BigQuery with minimal changes)
+-- 數位廣告 CTR 與轉換分析 SQL 查詢
+-- 設計用於 SQLite（只需少量調整即可適用於 PostgreSQL/BigQuery）
 
--- 1. Basic Aggregation: Daily CTR, CVR, Avg CPC
--- Overview of daily performance
+-- 1. 基礎聚合：每日 CTR (點擊率), CVR (轉換率), Avg CPC (平均點擊成本)
+-- 每日成效概覽
 SELECT 
     DATE(timestamp) as date,
     COUNT(*) as impressions,
@@ -15,8 +15,8 @@ FROM ad_impressions
 GROUP BY 1
 ORDER BY 1;
 
--- 2. Segmentation Analysis: Device, Browser
--- Performance breakdown by device and browser
+-- 2. 分群分析：裝置、瀏覽器
+-- 依裝置與瀏覽器細分表現
 SELECT 
     device_type,
     browser,
@@ -27,8 +27,8 @@ FROM ad_impressions
 GROUP BY 1, 2
 ORDER BY 1, 5 DESC;
 
--- 3. Time Trends: Hourly Analysis
--- Identify peak performance hours
+-- 3. 時間趨勢：每小時分析
+-- 找出一天中的黃金時段
 SELECT 
     strftime('%H', timestamp) as hour_of_day,
     COUNT(*) as impressions,
@@ -37,8 +37,8 @@ FROM ad_impressions
 GROUP BY 1
 ORDER BY 1;
 
--- 4. High Value Users: CTR > 5% and has conversion
--- Filter for high-potential user IDs. Aggregated by user_id.
+-- 4. 高價值用戶：CTR > 5% (模擬值) 且有轉換
+-- 篩選高潛力用戶 ID。由於資料是單次曝光層級，需先對 user_id 進行聚合 (Group By)。
 SELECT 
     user_id,
     COUNT(*) as user_impressions,
@@ -51,8 +51,8 @@ HAVING user_ctr > 5.0 AND user_conversions > 0
 ORDER BY user_conversions DESC
 LIMIT 50;
 
--- 5. A/B Testing Analysis
--- Comparison of control vs experimental groups
+-- 5. A/B 測試模擬
+-- 比較實驗組與對照組的成效
 SELECT 
     experiment_group,
     COUNT(*) as impressions,
@@ -62,8 +62,8 @@ SELECT
 FROM ad_impressions
 GROUP BY 1;
 
--- 6. Funnel Analysis
--- Calculate conversion rates across Impressions -> Click -> Registration -> Conversion
+-- 6. 漏斗分析 (Funnel Analysis)
+-- 計算 曝光 -> 點擊 -> 註冊 -> 轉換 的各階段轉換率
 WITH FunnelStats AS (
     SELECT 
         COUNT(*) as total_impressions,
@@ -73,17 +73,17 @@ WITH FunnelStats AS (
     FROM ad_impressions
 )
 SELECT 
-    '1. Impressions' as step, total_impressions as count, 100.0 as conversion_rate
+    'Impressions' as step, total_impressions as count, 100.0 as conversion_rate
 FROM FunnelStats
 UNION ALL
 SELECT 
-    '2. Clicks' as step, total_clicks, ROUND(total_clicks * 100.0 / total_impressions, 2)
+    'Clicks' as step, total_clicks, ROUND(total_clicks * 100.0 / total_impressions, 2)
 FROM FunnelStats
 UNION ALL
 SELECT 
-    '3. Registrations' as step, total_registrations, ROUND(total_registrations * 100.0 / total_clicks, 2)
+    'Registrations' as step, total_registrations, ROUND(total_registrations * 100.0 / total_clicks, 2)
 FROM FunnelStats
 UNION ALL
 SELECT 
-    '4. Conversions' as step, total_conversions, ROUND(total_conversions * 100.0 / total_registrations, 2)
+    'Conversions' as step, total_conversions, ROUND(total_conversions * 100.0 / total_registrations, 2)
 FROM FunnelStats;

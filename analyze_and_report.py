@@ -5,7 +5,7 @@ import seaborn as sns
 import os
 from scipy import stats # For statistical significance test
 
-# Set style for professional visualization
+# 設定優質的圖表風格
 plt.style.use('seaborn-v0_8-darkgrid')
 sns.set_context("talk")
 
@@ -16,18 +16,18 @@ def run_query(query, conn):
 
 def main():
     if not os.path.exists(DB_FILE):
-        print(f"Database {DB_FILE} not found. Please run setup_db.py first.")
+        print(f"找不到資料庫 {DB_FILE}。請先執行 setup_db.py。")
         return
 
     conn = sqlite3.connect(DB_FILE)
-    print("Connected to database...")
+    print("已連線至資料庫...")
     
     # Create reports directory if not exists
     if not os.path.exists('reports'):
         os.makedirs('reports')
 
-    # --- 1. Daily Trend Visualization ---
-    print("Analyzing daily trends...")
+    # --- 1. 每日趨勢視覺化 ---
+    print("正在分析每日趨勢...")
     query_daily = """
     SELECT 
         DATE(timestamp) as date,
@@ -45,10 +45,10 @@ def main():
     plt.xticks(rotation=45)
     plt.tight_layout()
     plt.savefig('reports/daily_ctr_trend.png')
-    print("Saved reports/daily_ctr_trend.png")
+    print("已儲存 reports/daily_ctr_trend.png")
 
-    # --- 2. Device Comparison ---
-    print("Analyzing device performance...")
+    # --- 2. 裝置比較 ---
+    print("正在分析裝置成效...")
     query_device = """
     SELECT 
         device_type,
@@ -65,18 +65,18 @@ def main():
     plt.ylabel('CTR (%)')
     plt.xlabel('Device')
     
-    # Add data labels
+    # 加上數值標籤
     for i, v in enumerate(df_device['ctr']):
         barplot.text(i, v + 0.05, f"{v:.2f}%", ha='center', fontweight='bold')
         
     plt.tight_layout()
     plt.savefig('reports/device_ctr_comparison.png')
-    print("Saved reports/device_ctr_comparison.png")
+    print("已儲存 reports/device_ctr_comparison.png")
 
-    # --- 3. A/B Test Results and Statistical Testing ---
-    print("Analyzing A/B test results (including statistical testing)...")
+    # --- 3. A/B 測試結果與統計檢定 ---
+    print("正在分析 A/B 測試結果 (含統計檢定)...")
     
-    # (1) Extract raw data for t-test
+    # (1) 撈取原始數據進行 T-Test
     query_raw = "SELECT experiment_group, is_click FROM ad_impressions"
     df_raw = run_query(query_raw, conn)
     
@@ -85,15 +85,15 @@ def main():
     
     t_stat, p_value = stats.ttest_ind(group_control, group_test)
     
-    print(f"\n[A/B Statistical Test Results]")
+    print(f"\n[A/B 統計檢定結果]")
     print(f"Control Group N={len(group_control)}, Test Group N={len(group_test)}")
     print(f"T-statistic: {t_stat:.4f}, P-value: {p_value:.4f}")
     if p_value < 0.05:
-        print(">> Result: Significant - Reject Null Hypothesis")
+        print(">> 結果: 顯著 (Significant) - 拒絕虛無假設")
     else:
-        print(">> Result: Not Significant")
+        print(">> 結果: 不顯著 (Not Significant)")
         
-    # (2) Visualization
+    # (2) 視覺化
     query_ab = """
     SELECT 
         experiment_group,
@@ -104,7 +104,7 @@ def main():
     """
     df_ab = run_query(query_ab, conn)
     
-    # Dual-axis chart
+    # 雙軸圖表
     fig, ax1 = plt.subplots(figsize=(10, 6))
     
     color = 'tab:blue'
@@ -122,10 +122,10 @@ def main():
     plt.title(f'A/B Test Result (p={p_value:.3f})', fontsize=16, fontweight='bold', pad=20)
     plt.tight_layout()
     plt.savefig('reports/ab_test_result.png')
-    print("Saved reports/ab_test_result.png")
+    print("已儲存 reports/ab_test_result.png")
     
-    # --- 4. Funnel Analysis ---
-    print("Running funnel analysis...")
+    # --- 4. 漏斗分析 ---
+    print("正在執行漏斗分析...")
     query_funnel = """
     WITH FunnelStats AS (
         SELECT 
@@ -144,7 +144,7 @@ def main():
     SELECT '4.Conversion', total_conversions FROM FunnelStats;
     """
     df_funnel = run_query(query_funnel, conn)
-    print("\n[Funnel Data]")
+    print("\n[漏斗數據]")
     print(df_funnel)
     
     plt.figure(figsize=(10, 6))
@@ -154,10 +154,10 @@ def main():
     plt.ylabel('Funnel Step')
     plt.tight_layout()
     plt.savefig('reports/funnel_analysis.png')
-    print("Saved reports/funnel_analysis.png")
+    print("已儲存 reports/funnel_analysis.png")
 
     conn.close()
-    print("\nAnalysis complete. Check generated PNG files.")
+    print("\n分析完成。請查看生成的 PNG 圖檔。")
 
 if __name__ == "__main__":
     main()

@@ -7,10 +7,10 @@ def setup_database():
     db_file = 'ads_data.db'
     
     if not os.path.exists(csv_file):
-        print(f"Error: {csv_file} not found.")
+        print(f"錯誤: 找不到 {csv_file}。")
         return
 
-    print(f"Loading {csv_file} into SQLite...")
+    print(f"正在將 {csv_file} 載入 SQLite...")
     
     conn = sqlite3.connect(db_file)
     cursor = conn.cursor()
@@ -36,22 +36,22 @@ def setup_database():
     """
     cursor.execute(create_table_sql)
     
-    # Read CSV and Insert
+    # 讀取 CSV 並寫入
     with open(csv_file, 'r', encoding='utf-8') as f:
         reader = csv.reader(f)
-        header = next(reader) # Skip header
+        header = next(reader) # 跳過標題列
         
-        # Batch insert
+        # 批次插入
         rows = list(reader)
         
     insert_sql = "INSERT OR REPLACE INTO ad_impressions VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)"
     cursor.executemany(insert_sql, rows)
     conn.commit()
     
-    # Verify
+    # 驗證
     cursor.execute("SELECT count(*) FROM ad_impressions")
     count = cursor.fetchone()[0]
-    print(f"Successfully loaded {count} rows into 'ad_impressions' table.")
+    print(f"成功載入 {count} 筆資料至 'ad_impressions' 資料表。")
     
     conn.close()
 
