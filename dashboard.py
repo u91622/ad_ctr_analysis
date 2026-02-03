@@ -9,7 +9,7 @@ import os
 st.set_page_config(page_title="Ad Campaign Dashboard", layout="wide")
 
 # Headers
-st.title("📊 數位廣告成效儀表板 (Ad Campaign Dashboard)")
+st.title("Ad Campaign Dashboard")
 st.markdown("### Real-time Analysis of CTR, CVR, and Funnel Metrics")
 
 # Database Connection
@@ -37,7 +37,7 @@ if df.empty:
     st.stop()
 
 # --- Sidebar Filters ---
-st.sidebar.header("🔍 Filter Options")
+st.sidebar.header("Filter Options")
 
 # Date Filter
 min_date = df['date'].min()
@@ -55,7 +55,7 @@ if selected_device != 'All':
 
 df_filtered = df[mask]
 
-# --- KPI MetricsRow ---
+# --- KPI Metrics Row ---
 col1, col2, col3, col4 = st.columns(4)
 
 total_imp = len(df_filtered)
@@ -81,7 +81,7 @@ st.divider()
 c1, c2 = st.columns(2)
 
 with c1:
-    st.subheader("📈 Daily CTR Trend")
+    st.subheader("Daily CTR Trend")
     daily_stats = df_filtered.groupby('date')['is_click'].mean().reset_index()
     daily_stats['ctr'] = daily_stats['is_click'] * 100
     
@@ -91,7 +91,7 @@ with c1:
     st.plotly_chart(fig_line, use_container_width=True)
 
 with c2:
-    st.subheader("🧪 A/B Test Performance")
+    st.subheader("A/B Test Performance")
     ab_stats = df_filtered.groupby('experiment_group')[['is_click']].mean().reset_index()
     ab_stats['ctr'] = ab_stats['is_click'] * 100
     
@@ -100,7 +100,7 @@ with c2:
     st.plotly_chart(fig_bar, use_container_width=True)
 
 # --- Charts Section 2 (Funnel) ---
-st.subheader("🔻 Marketing Funnel Analysis")
+st.subheader("Marketing Funnel Analysis")
 
 funnel_data = {
     'Step': ['Impressions', 'Clicks', 'Registrations', 'Conversions'],
@@ -126,3 +126,6 @@ st.plotly_chart(fig_funnel, use_container_width=True)
 # --- Raw Data Preview ---
 with st.expander("Show Raw Data Preview"):
     st.dataframe(df_filtered.head(100))
+
+if __name__ == "__main__":
+    pass # Streamlit processes the script directly
