@@ -15,6 +15,8 @@ def setup_database():
     conn = sqlite3.connect(db_file)
     cursor = conn.cursor()
     
+    cursor.execute("DROP TABLE IF EXISTS ad_impressions")
+
     create_table_sql = """
     CREATE TABLE IF NOT EXISTS ad_impressions (
         impression_id TEXT PRIMARY KEY,
@@ -28,6 +30,7 @@ def setup_database():
         cpc_bid REAL,
         experiment_group TEXT,
         is_click INTEGER,
+        is_registration INTEGER,
         is_conversion INTEGER
     );
     """
@@ -41,7 +44,7 @@ def setup_database():
         # 批次插入
         rows = list(reader)
         
-    insert_sql = "INSERT OR REPLACE INTO ad_impressions VALUES (?,?,?,?,?,?,?,?,?,?,?,?)"
+    insert_sql = "INSERT OR REPLACE INTO ad_impressions VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)"
     cursor.executemany(insert_sql, rows)
     conn.commit()
     

@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import math
 
 def generate_data(num_rows=50000):
-    print(f"正在生成 {num_rows} 筆合成廣告資料 (使用標準庫)...")
+    print(f"正在生成 {num_rows} 筆合成廣告資料 (含漏斗: 點擊 -> 註冊 -> 轉換)...")
     
     random.seed(42)
     
@@ -69,23 +69,34 @@ def generate_data(num_rows=50000):
         
         is_click = 1 if random.random() < prob_click else 0
         
-        # --- 轉換 (Conversion) 邏輯 ---
+        # --- 漏斗邏輯: 點擊 -> 註冊 (Registration) -> 轉換 (Conversion) ---
+        is_reg = 0
         is_conv = 0
+        
         if is_click == 1:
-            base_cvr = 0.05
-            prob_conv = base_cvr
+            # 點擊後，有 30% 機率註冊
+            prob_reg = 0.30
             
-            if weekday >= 5: prob_conv *= 1.3      # 週末轉換率較高
-            if dev == 'desktop': prob_conv *= 1.4  # 桌機轉換率較高
+            # 桌機註冊較容易 (打字方便)
+            if dev == 'desktop': prob_reg *= 1.2
             
-            if random.random() < prob_conv:
-                is_conv = 1
+            if random.random() < prob_reg:
+                is_reg = 1
                 
-        row = [imp_id, u_id, a_id, ts_str, dev, browser, geo, age, cpc, grp, is_click, is_conv]
+                # 註冊後，有 20% 機率轉換 (購買)
+                prob_conv = 0.20
+                
+                # 週末轉換率較高
+                if weekday >= 5: prob_conv *= 1.3
+                
+                if random.random() < prob_conv:
+                    is_conv = 1
+                
+        row = [imp_id, u_id, a_id, ts_str, dev, browser, geo, age, cpc, grp, is_click, is_reg, is_conv]
         data_rows.append(row)
         
     # 儲存為 CSV
-    headers = ['impression_id', 'user_id', 'ad_id', 'timestamp', 'device_type', 'browser', 'geo', 'age_group', 'cpc_bid', 'experiment_group', 'is_click', 'is_conversion']
+    headers = ['impression_id', 'user_id', 'ad_id', 'timestamp', 'device_type', 'browser', 'geo', 'age_group', 'cpc_bid', 'experiment_group', 'is_click', 'is_registration', 'is_conversion']
     
     csv_file = 'ad_data.csv'
     with open(csv_file, 'w', newline='', encoding='utf-8') as f:

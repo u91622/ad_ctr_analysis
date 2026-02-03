@@ -61,3 +61,29 @@ SELECT
     ROUND(SUM(is_conversion) * 1.0 / NULLIF(SUM(is_click), 0) * 100, 2) as cvr_percent
 FROM ad_impressions
 GROUP BY 1;
+
+-- 6. [NEW] 漏斗分析 (Funnel Analysis)
+-- 計算 曝光 -> 點擊 -> 註冊 -> 轉換 的各階段轉換率
+WITH FunnelStats AS (
+    SELECT 
+        COUNT(*) as total_impressions,
+        SUM(is_click) as total_clicks,
+        SUM(is_registration) as total_registrations,
+        SUM(is_conversion) as total_conversions
+    FROM ad_impressions
+)
+SELECT 
+    'Impressions' as step, total_impressions as count, 100.0 as conversion_rate
+FROM FunnelStats
+UNION ALL
+SELECT 
+    'Clicks' as step, total_clicks, ROUND(total_clicks * 100.0 / total_impressions, 2)
+FROM FunnelStats
+UNION ALL
+SELECT 
+    'Registrations' as step, total_registrations, ROUND(total_registrations * 100.0 / total_clicks, 2)
+FROM FunnelStats
+UNION ALL
+SELECT 
+    'Conversions' as step, total_conversions, ROUND(total_conversions * 100.0 / total_registrations, 2)
+FROM FunnelStats;
