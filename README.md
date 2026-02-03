@@ -64,10 +64,24 @@ ad_ctr_analysis/
 
 ---
 
-## 📈 互動式儀表板 (Dashboard)
-為了讓非技術團隊也能探索數據，我們製作了互動式 Dashboard：
-*   **[Tableau Public 連結](https://public.tableau.com/en-us/s/gallery)** (範例連結)
-*   此儀表板串接了 `ad_data.csv`，提供即時的篩選與下鑽分析 (Drill-down)。
+## 📈 互動式儀表板 (Discovery Dashboard)
+本專案包含一個基於 **Streamlit** 的全功能數據儀表板，讓您可以透過瀏覽器跟數據互動。
+
+### 功能特色 (Features)
+*   **多維度篩選**：可依照「日期區間」與「裝置類型」即時過濾數據。
+*   **關鍵指標監控 (KPIs)**：即時計算 CTR, CVR, CPC 等核心指標。
+*   **動態視覺化**：整合 Plotly 的互動式圖表（可縮放、懸停查看數值）。
+
+### 如何啟動 (How to Run)
+1.  安裝必要的 Python 套件：
+    ```bash
+    pip install streamlit plotly
+    ```
+2.  啟動 Dashboard：
+    ```bash
+    streamlit run dashboard.py
+    ```
+3.  瀏覽器會自動開啟，即可開始探索數據（預設網址：`http://localhost:8501`）。
 
 ---
 
