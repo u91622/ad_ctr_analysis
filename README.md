@@ -1,7 +1,7 @@
 # 數位廣告點選率 (CTR) 與轉換分析專案
 ### Digital Advertising CTR & Conversion Analysis Pipeline
 
-這是一個模擬真實廣告技術情境的端到端資料分析專案。從資料產生、SQL 資料工程到 Python 視覺化自動報告，展示對廣告指標（如 CTR、CVR、CPC）的技術實作。
+這是一個利用Antigravity IDE所進行模擬真實廣告技術情境的端到端資料分析專案。從資料產生、SQL 資料工程到 Python 視覺化自動報告，展示對廣告指標（如 CTR、CVR、CPC）的技術實作。
 
 ---
 
